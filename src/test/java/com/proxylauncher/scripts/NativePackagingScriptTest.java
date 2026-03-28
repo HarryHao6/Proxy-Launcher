@@ -28,13 +28,25 @@ public class NativePackagingScriptTest {
     public void snapshotBuildsProduceFourPartNativeVersionForWindowsInstallers() throws Exception {
         Assumptions.assumeTrue(System.getProperty("os.name").toLowerCase().contains("win"));
 
+        Path tempRoot = Files.createTempDirectory("native-version-test");
+        Files.copy(Path.of("scripts", "common.ps1"), tempRoot.resolve("common.ps1"));
+        Files.writeString(
+                tempRoot.resolve("pom.xml"),
+                """
+                        <project>
+                          <version>0.1.0-SNAPSHOT</version>
+                        </project>
+                        """.trim(),
+                StandardCharsets.UTF_8
+        );
+
         Process process = new ProcessBuilder(
                 "powershell.exe",
                 "-NoProfile",
                 "-ExecutionPolicy",
                 "Bypass",
                 "-Command",
-                "& { Set-Location '" + Path.of("").toAbsolutePath() + "'; . .\\scripts\\common.ps1; Get-NativeAppVersion }"
+                "& { Set-Location '" + tempRoot.toAbsolutePath() + "'; . .\\common.ps1; Get-NativeAppVersion }"
         ).redirectErrorStream(true).start();
 
         String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();

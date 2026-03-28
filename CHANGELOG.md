@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-28
+
 - Bootstrap Proxy Launcher as a JavaFX desktop MVP repository
 - Add JSON persistence, validation, tests, packaging scripts, and GitHub CI
 - Migrate the project to Java 17 with OpenJFX-based runtime setup
