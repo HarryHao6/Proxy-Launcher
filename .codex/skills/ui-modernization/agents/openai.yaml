@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Modernization"
+  short_description: "Modernize Proxy Launcher JavaFX screens"
+  default_prompt: "Use $ui-modernization to refresh this Proxy Launcher JavaFX view with clearer hierarchy and CSS-backed styling."

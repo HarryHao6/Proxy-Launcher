@@ -1,0 +1,10 @@
+target/
+dist/
+native-dist/
+.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+.vscode/
+*.iml
+*.log

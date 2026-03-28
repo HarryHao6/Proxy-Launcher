@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Verify"
+  short_description: "Review Proxy Launcher UI changes"
+  default_prompt: "Use $ui-verify to review this Proxy Launcher UI change for layout, flow, and launch-mode regressions."

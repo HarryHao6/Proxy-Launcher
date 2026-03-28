@@ -1,0 +1,305 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: linear-gradient(to bottom, #f7f9fc 0%, #edf2f9 100%);
+    -fx-text-fill: #182033;
+}
+
+.app-shell,
+.dialog-shell {
+    -fx-background-color: transparent;
+}
+
+.page-header {
+    -fx-padding: 4 2 18 2;
+}
+
+.page-title {
+    -fx-font-size: 27px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #182033;
+}
+
+.dialog-title {
+    -fx-font-size: 23px;
+}
+
+.page-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #607086;
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #182033;
+}
+
+.section-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #66768d;
+}
+
+.helper-text,
+.hint-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6f7f96;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #445166;
+    -fx-padding: 11 0 0 0;
+}
+
+.panel-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 18;
+    -fx-border-color: #dbe3f0;
+    -fx-border-radius: 18;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.08), 18, 0.18, 0, 6);
+}
+
+.content-split {
+    -fx-background-color: transparent;
+    -fx-box-border: transparent;
+    -fx-padding: 0;
+}
+
+.content-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.content-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.content-scroll > .corner {
+    -fx-background-color: transparent;
+}
+
+.content-split > .split-pane-divider {
+    -fx-padding: 0 1 0 1;
+    -fx-background-color: transparent, #d9e1ef;
+}
+
+.button {
+    -fx-background-color: #eef3fb;
+    -fx-background-radius: 12;
+    -fx-border-color: transparent;
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 15 10 15;
+    -fx-text-fill: #22304a;
+}
+
+.button-row {
+    -fx-padding: 2 0 0 0;
+}
+
+.button:hover {
+    -fx-background-color: #e4edf9;
+}
+
+.button:disabled {
+    -fx-opacity: 0.55;
+}
+
+.secondary-button {
+    -fx-background-color: #eef3fb;
+    -fx-text-fill: #22304a;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e2ebf8;
+}
+
+.danger-button {
+    -fx-background-color: #fff0f0;
+    -fx-text-fill: #b42318;
+}
+
+.danger-button:hover {
+    -fx-background-color: #fde3e3;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(to right, #3879ff 0%, #2d66ea 100%);
+    -fx-text-fill: #ffffff;
+    -fx-padding: 11 18 11 18;
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(to right, #2f70f2 0%, #255cdb 100%);
+}
+
+.text-field,
+.text-area,
+.choice-box {
+    -fx-background-color: #f8fbff, #ffffff;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 12, 11;
+    -fx-border-color: #cfd8e6;
+    -fx-border-radius: 12;
+    -fx-font-size: 13px;
+    -fx-padding: 9 12 9 12;
+    -fx-text-fill: #1e2a40;
+    -fx-prompt-text-fill: #9aa6ba;
+}
+
+.text-field:focused,
+.text-area:focused,
+.choice-box:focused {
+    -fx-background-color: #eef5ff, #ffffff;
+    -fx-border-color: #3a7bfd;
+}
+
+.text-area .content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 11;
+}
+
+.text-area:focused .content {
+    -fx-background-color: #ffffff;
+}
+
+.notes-area {
+    -fx-pref-row-count: 4;
+}
+
+.choice-box > .label {
+    -fx-text-fill: #1e2a40;
+}
+
+.app-list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: #dbe3f0;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 5;
+}
+
+.app-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 4 0 4 0;
+}
+
+.app-list-view .list-cell:filled:selected,
+.app-list-view .list-cell:filled:hover {
+    -fx-background-color: transparent;
+}
+
+.app-list-cell-content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 14;
+    -fx-border-color: #dbe3f0;
+    -fx-border-radius: 14;
+    -fx-padding: 12 14 12 14;
+    -fx-spacing: 3;
+}
+
+.app-list-view .list-cell:filled:hover .app-list-cell-content {
+    -fx-background-color: #f6f9ff;
+    -fx-border-color: #c7d8fb;
+}
+
+.app-list-view .list-cell:filled:selected .app-list-cell-content {
+    -fx-background-color: linear-gradient(to right, #3879ff 0%, #2d66ea 100%);
+    -fx-border-color: transparent;
+}
+
+.app-list-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #182033;
+}
+
+.app-list-path {
+    -fx-font-size: 11px;
+    -fx-text-fill: #73839a;
+}
+
+.app-list-view .list-cell:filled:selected .app-list-name,
+.app-list-view .list-cell:filled:selected .app-list-path {
+    -fx-text-fill: #ffffff;
+}
+
+.empty-state-label {
+    -fx-text-fill: #6f7f96;
+    -fx-padding: 24;
+    -fx-wrap-text: true;
+}
+
+.state-pill {
+    -fx-background-radius: 999;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 10 6 10;
+}
+
+.state-pill-active {
+    -fx-background-color: #e8f2ff;
+    -fx-text-fill: #2d66ea;
+}
+
+.state-pill-empty {
+    -fx-background-color: #edf1f7;
+    -fx-text-fill: #66768d;
+}
+
+.launch-card {
+    -fx-alignment: center-left;
+}
+
+.status-panel {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 14 16 14 16;
+}
+
+.status-info {
+    -fx-background-color: #eef4ff;
+    -fx-border-color: #ccdafe;
+}
+
+.status-success {
+    -fx-background-color: #ecfdf3;
+    -fx-border-color: #b9e5ca;
+}
+
+.status-warning {
+    -fx-background-color: #fff8e8;
+    -fx-border-color: #f3d991;
+}
+
+.status-error {
+    -fx-background-color: #fff0f0;
+    -fx-border-color: #f2c8c8;
+}
+
+.status-heading {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #334158;
+}
+
+.status-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: #334158;
+}
+
+.form-error {
+    -fx-background-color: #fff3f2;
+    -fx-background-radius: 12;
+    -fx-border-color: #f3c4c1;
+    -fx-border-radius: 12;
+    -fx-padding: 10 12 10 12;
+    -fx-text-fill: #b42318;
+}

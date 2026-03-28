@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Check"
+  short_description: "Check Proxy Launcher release readiness"
+  default_prompt: "Use $release-check to verify whether this repository is ready for the next Proxy Launcher release."

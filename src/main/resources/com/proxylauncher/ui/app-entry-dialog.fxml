@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.proxylauncher.ui.AppEntryDialogController"
+      spacing="16"
+      styleClass="dialog-shell">
+    <padding>
+        <Insets top="18" right="18" bottom="18" left="18"/>
+    </padding>
+
+    <children>
+        <VBox spacing="4" styleClass="dialog-header">
+            <children>
+                <Label styleClass="page-title dialog-title" text="Application Details"/>
+                <Label styleClass="page-subtitle"
+                       text="Store a display name, executable path, optional launch arguments, and any useful notes."
+                       wrapText="true"/>
+            </children>
+        </VBox>
+
+        <VBox spacing="14" styleClass="panel-card">
+            <children>
+                <GridPane hgap="12" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="116"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <children>
+                        <Label styleClass="field-label" text="Name" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <TextField fx:id="nameField"
+                                   promptText="Notepad"
+                                   GridPane.columnIndex="1"
+                                   GridPane.rowIndex="0"/>
+
+                        <Label styleClass="field-label" text="Executable" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <children>
+                                <TextField fx:id="executablePathField"
+                                           promptText="C:\\Windows\\System32\\notepad.exe"
+                                           HBox.hgrow="ALWAYS"/>
+                                <Button mnemonicParsing="false"
+                                        onAction="#handleBrowseExecutable"
+                                        styleClass="secondary-button"
+                                        text="Browse"/>
+                            </children>
+                        </HBox>
+
+                        <Label styleClass="field-label" text="Arguments" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <TextField fx:id="argumentsField"
+                                   promptText="Optional launch arguments"
+                                   GridPane.columnIndex="1"
+                                   GridPane.rowIndex="2"/>
+
+                        <Label styleClass="field-label" text="Notes" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <TextArea fx:id="notesArea"
+                                  prefRowCount="4"
+                                  promptText="Optional notes for future launches"
+                                  styleClass="notes-area"
+                                  wrapText="true"
+                                  GridPane.columnIndex="1"
+                                  GridPane.rowIndex="3"/>
+                    </children>
+                </GridPane>
+
+                <Label fx:id="errorLabel"
+                       managed="false"
+                       styleClass="form-error"
+                       visible="false"
+                       wrapText="true"/>
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT" spacing="10">
+            <children>
+                <Button cancelButton="true"
+                        mnemonicParsing="false"
+                        onAction="#handleCancel"
+                        styleClass="secondary-button"
+                        text="Cancel"/>
+                <Button fx:id="saveButton"
+                        mnemonicParsing="false"
+                        onAction="#handleSave"
+                        styleClass="primary-button"
+                        text="Save Application"/>
+            </children>
+        </HBox>
+    </children>
+</VBox>

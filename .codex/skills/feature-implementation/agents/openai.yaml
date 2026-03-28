@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Implementation"
+  short_description: "Implement Proxy Launcher features safely"
+  default_prompt: "Use $feature-implementation to add this Proxy Launcher behavior in the smallest safe slice."
