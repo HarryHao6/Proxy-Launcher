@@ -81,6 +81,10 @@
     -fx-background-color: transparent;
 }
 
+.details-stack {
+    -fx-padding: 0 0 4 0;
+}
+
 .content-split > .split-pane-divider {
     -fx-padding: 0 1 0 1;
     -fx-background-color: transparent, #d9e1ef;
@@ -212,6 +216,12 @@
 .app-list-view .list-cell:filled:selected .app-list-cell-content {
     -fx-background-color: linear-gradient(to right, #3879ff 0%, #2d66ea 100%);
     -fx-border-color: transparent;
+}
+
+.app-list-view .list-cell.app-list-drop-target .app-list-cell-content {
+    -fx-background-color: #eef5ff;
+    -fx-border-color: #76a6ff;
+    -fx-border-width: 2;
 }
 
 .app-list-name {

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AppEntryDialogLayoutTest {
@@ -16,6 +17,14 @@ public class AppEntryDialogLayoutTest {
         assertTrue(fxml.contains("fx:id=\"errorLabel\""), "The dialog should include an error label.");
         assertTrue(fxml.contains("managed=\"false\""), "The error label should not take layout space before errors exist.");
         assertTrue(fxml.contains("visible=\"false\""), "The error label should stay hidden until a validation error is shown.");
+    }
+
+    @Test
+    public void compatibilityModeToggleIsNotExposedInTheDialog() throws IOException {
+        String fxml = readDialogView();
+
+        assertFalse(fxml.contains("launchViaCmdCheckBox"), "The dialog should not expose a separate compatibility-mode checkbox.");
+        assertFalse(fxml.contains("Compatibility mode"), "The dialog should not mention compatibility mode after start becomes the default strategy.");
     }
 
     public String readDialogView() throws IOException {

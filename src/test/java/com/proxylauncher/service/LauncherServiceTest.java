@@ -11,20 +11,39 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LauncherServiceTest {
-    private final LauncherService launcherService = new LauncherService();
+    private final LauncherService launcherService = new LauncherService(new LaunchLogService());
 
     @Test
-    public void buildsCommandWithTokenizedArguments() {
+    public void buildsCommandUsingWindowsStartWithTokenizedArguments() {
         AppEntry appEntry = new AppEntry("Demo", "C:\\Tools\\demo.exe", "--profile \"Proxy Test\" --verbose", "");
 
         List<String> command = launcherService.buildCommand(appEntry);
 
-        assertEquals(
-                List.of("C:\\Tools\\demo.exe", "--profile", "Proxy Test", "--verbose"),
-                command
+        assertEquals("cmd.exe", command.get(0));
+        assertEquals("/c", command.get(1));
+        assertTrue(command.get(2).startsWith("start \"\" "));
+        assertTrue(command.get(2).contains("\"C:\\Tools\\demo.exe\""));
+        assertTrue(command.get(2).contains("--profile"));
+        assertTrue(command.get(2).contains("\"Proxy Test\""));
+        assertTrue(command.get(2).contains("--verbose"));
+    }
+
+    @Test
+    public void launchPlanDoesNotForceTheExecutableDirectoryWhenUsingShellStart() {
+        LaunchRequest request = new LaunchRequest(
+                new AppEntry("Codex", "C:\\Program Files\\WindowsApps\\OpenAI.Codex\\app\\Codex.exe", "", ""),
+                ProxyMode.DEFAULT,
+                "http://127.0.0.1:7890",
+                ""
         );
+
+        LaunchPlan plan = launcherService.buildLaunchPlan(request);
+
+        assertEquals(null, plan.workingDirectory());
+        assertEquals("Windows shell start", plan.launchStrategy());
     }
 
     @Test

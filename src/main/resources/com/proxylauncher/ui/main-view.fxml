@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -35,54 +36,53 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    styleClass="content-scroll"
-                    BorderPane.alignment="CENTER">
-            <content>
-                <SplitPane dividerPositions="0.34" styleClass="content-split">
-                    <items>
-                        <VBox spacing="16" styleClass="panel-card">
+        <SplitPane dividerPositions="0.32" styleClass="content-split" BorderPane.alignment="CENTER">
+            <items>
+                <VBox minWidth="280" prefWidth="340" spacing="16" styleClass="panel-card">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" spacing="12">
                             <children>
-                                <HBox alignment="CENTER_LEFT" spacing="12">
+                                <VBox spacing="2" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <VBox spacing="2" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <Label styleClass="section-title" text="Applications"/>
-                                                <Label fx:id="appCountLabel" styleClass="section-subtitle" text="0 saved entries"/>
-                                            </children>
-                                        </VBox>
+                                        <Label styleClass="section-title" text="Applications"/>
+                                        <Label fx:id="appCountLabel" styleClass="section-subtitle" text="0 saved entries"/>
                                     </children>
-                                </HBox>
-
-                                <HBox spacing="10" styleClass="button-row">
-                                    <children>
-                                        <Button mnemonicParsing="false"
-                                                onAction="#handleAddApp"
-                                                styleClass="secondary-button"
-                                                text="Add App"/>
-                                        <Button fx:id="editAppButton"
-                                                mnemonicParsing="false"
-                                                onAction="#handleEditApp"
-                                                styleClass="secondary-button"
-                                                text="Edit"/>
-                                        <Button fx:id="deleteAppButton"
-                                                mnemonicParsing="false"
-                                                onAction="#handleDeleteApp"
-                                                styleClass="danger-button"
-                                                text="Delete"/>
-                                    </children>
-                                </HBox>
-
-                                <Label styleClass="helper-text"
-                                       text="Maintain a reusable list of launch targets, then select one to review its details and launch settings."
-                                       wrapText="true"/>
-
-                                <ListView fx:id="appListView" styleClass="app-list-view" VBox.vgrow="ALWAYS"/>
+                                </VBox>
                             </children>
-                        </VBox>
+                        </HBox>
 
-                        <VBox spacing="16">
+                        <FlowPane hgap="10" vgap="10" styleClass="button-row">
+                            <children>
+                                <Button mnemonicParsing="false"
+                                        onAction="#handleAddApp"
+                                        styleClass="secondary-button"
+                                        text="Add App"/>
+                                <Button fx:id="editAppButton"
+                                        mnemonicParsing="false"
+                                        onAction="#handleEditApp"
+                                        styleClass="secondary-button"
+                                        text="Edit"/>
+                                <Button fx:id="deleteAppButton"
+                                        mnemonicParsing="false"
+                                        onAction="#handleDeleteApp"
+                                        styleClass="danger-button"
+                                        text="Delete"/>
+                            </children>
+                        </FlowPane>
+
+                        <Label styleClass="helper-text"
+                               text="Maintain a reusable list of launch targets, then drag entries to reorder them for quick access."
+                               wrapText="true"/>
+
+                        <ListView fx:id="appListView" styleClass="app-list-view" VBox.vgrow="ALWAYS"/>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true"
+                            hbarPolicy="NEVER"
+                            styleClass="content-scroll">
+                    <content>
+                        <VBox spacing="16" styleClass="details-stack">
                             <children>
                                 <VBox spacing="14" styleClass="panel-card">
                                     <children>
@@ -195,42 +195,55 @@
                                         </GridPane>
                                     </children>
                                 </VBox>
-
-                                <HBox alignment="CENTER_LEFT" spacing="16" styleClass="panel-card launch-card">
-                                    <children>
-                                        <VBox spacing="2" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <Label styleClass="section-title" text="Launch"/>
-                                                <Label styleClass="section-subtitle"
-                                                       text="Proxy Launcher only passes environment variables. The target application must support those variables for the proxy to take effect."
-                                                       wrapText="true"/>
-                                            </children>
-                                        </VBox>
-                                        <Button fx:id="launchButton"
-                                                mnemonicParsing="false"
-                                                onAction="#handleLaunch"
-                                                styleClass="primary-button"
-                                                text="Launch Application"/>
-                                    </children>
-                                </HBox>
                             </children>
                         </VBox>
-                    </items>
-                </SplitPane>
-            </content>
-        </ScrollPane>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
     </center>
 
     <bottom>
-        <HBox fx:id="statusBar"
-              alignment="CENTER_LEFT"
-              spacing="10"
-              styleClass="status-panel status-info"
-              BorderPane.alignment="CENTER_LEFT">
+        <VBox spacing="12" BorderPane.alignment="CENTER_LEFT">
             <children>
-                <Label styleClass="status-heading" text="Status"/>
-                <Label fx:id="statusLabel" styleClass="status-message" text="Ready." wrapText="true"/>
+                <BorderPane styleClass="panel-card launch-card">
+                    <left>
+                        <VBox spacing="2" BorderPane.alignment="CENTER_LEFT">
+                            <children>
+                                <Label styleClass="section-title" text="Launch"/>
+                                <Label styleClass="section-subtitle"
+                                       text="Proxy Launcher passes environment variables through a Windows shell start command. The target application must support those variables for the proxy to take effect."
+                                       wrapText="true"/>
+                            </children>
+                        </VBox>
+                    </left>
+                    <right>
+                        <FlowPane alignment="CENTER_RIGHT" hgap="10" vgap="10" BorderPane.alignment="CENTER_RIGHT">
+                            <children>
+                                <Button mnemonicParsing="false"
+                                        onAction="#handleOpenLogFolder"
+                                        styleClass="secondary-button"
+                                        text="Open Log Folder"/>
+                                <Button fx:id="launchButton"
+                                        mnemonicParsing="false"
+                                        onAction="#handleLaunch"
+                                        styleClass="primary-button"
+                                        text="Launch Application"/>
+                            </children>
+                        </FlowPane>
+                    </right>
+                </BorderPane>
+
+                <HBox fx:id="statusBar"
+                      alignment="CENTER_LEFT"
+                      spacing="10"
+                      styleClass="status-panel status-info">
+                    <children>
+                        <Label styleClass="status-heading" text="Status"/>
+                        <Label fx:id="statusLabel" styleClass="status-message" text="Ready." wrapText="true"/>
+                    </children>
+                </HBox>
             </children>
-        </HBox>
+        </VBox>
     </bottom>
 </BorderPane>

@@ -5,6 +5,8 @@ import java.nio.file.Path;
 public final class ConfigPaths {
     private static final String APP_NAME = "ProxyLauncher";
     private static final String CONFIG_FILE_NAME = "config.json";
+    private static final String LOG_DIRECTORY_NAME = "logs";
+    private static final String LAUNCH_LOG_FILE_NAME = "launcher.log";
 
     private ConfigPaths() {
     }
@@ -19,5 +21,13 @@ public final class ConfigPaths {
 
     public static Path resolveConfigFile() {
         return resolveConfigDirectory().resolve(CONFIG_FILE_NAME);
+    }
+
+    public static Path resolveLogsDirectory() {
+        return resolveConfigDirectory().resolve(LOG_DIRECTORY_NAME);
+    }
+
+    public static Path resolveLaunchLogFile() {
+        return resolveLogsDirectory().resolve(LAUNCH_LOG_FILE_NAME);
     }
 }

@@ -9,10 +9,13 @@ The scope is intentionally compact, while the repository is still structured for
 ## What It Does
 
 - Manage a saved list of launchable applications
+- Reorder saved applications with drag and drop
 - Store a global default proxy
 - Launch an application in `DEFAULT`, `CUSTOM`, or `NONE` proxy mode
+- Start applications through `cmd.exe /c start` for better Windows app compatibility
 - Inject `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY` and lowercase variants into the child process environment
 - Persist application data and default proxy settings to a local JSON config file
+- Write launch diagnostics to a local log file for troubleshooting
 - Validate executable paths and basic proxy formats before launch
 
 ## Important Product Boundary

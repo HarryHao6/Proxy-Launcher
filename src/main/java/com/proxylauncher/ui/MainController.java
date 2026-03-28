@@ -7,6 +7,7 @@ import com.proxylauncher.model.ProxyMode;
 import com.proxylauncher.service.ConfigService;
 import com.proxylauncher.service.LauncherService;
 import com.proxylauncher.service.ValidationService;
+import com.proxylauncher.util.ListReorder;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,6 +24,10 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -31,6 +36,8 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,6 +50,7 @@ public class MainController {
     private static final String STATUS_ERROR = "status-error";
     private static final String STATE_PILL_ACTIVE = "state-pill-active";
     private static final String STATE_PILL_EMPTY = "state-pill-empty";
+    private static final DataFormat APP_ENTRY_DATA_FORMAT = new DataFormat("application/x-proxylauncher-app-index");
 
     @FXML
     private ListView<AppEntry> appListView;
@@ -88,7 +96,8 @@ public class MainController {
     private void initialize() {
         appListView.setItems(appItems);
         appListView.setPlaceholder(buildPlaceholderLabel());
-        appListView.setCellFactory(listView -> createAppEntryCell());
+        appListView.setCellFactory(this::createAppEntryCell);
+        configureAppListReordering();
         appItems.addListener((ListChangeListener<AppEntry>) change -> updateAppCount());
         appListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             showSelectedApp(newValue);
@@ -235,9 +244,28 @@ public class MainController {
                     trim(defaultProxyField.getText()),
                     trim(proxyToUse)
             ));
-            setStatus("Started " + selectedApp + ".", StatusTone.SUCCESS);
+            setStatus("Started " + selectedApp + ". Launch log saved to " + launcherService.getLogFile() + ".",
+                    StatusTone.SUCCESS);
         } catch (IOException exception) {
-            setStatus("Failed to launch application: " + exception.getMessage(), StatusTone.ERROR);
+            setStatus("Failed to launch application: " + exception.getMessage()
+                    + " See " + launcherService.getLogFile() + " for details.", StatusTone.ERROR);
+        }
+    }
+
+    @FXML
+    private void handleOpenLogFolder() {
+        Path logDirectory = launcherService == null ? null : launcherService.getLogDirectory();
+        if (logDirectory == null) {
+            setStatus("Log folder is not available yet.", StatusTone.WARNING);
+            return;
+        }
+
+        try {
+            Files.createDirectories(logDirectory);
+            new ProcessBuilder("explorer.exe", logDirectory.toString()).start();
+            setStatus("Opened log folder: " + logDirectory, StatusTone.INFO);
+        } catch (IOException exception) {
+            setStatus("Failed to open log folder: " + exception.getMessage(), StatusTone.ERROR);
         }
     }
 
@@ -330,7 +358,7 @@ public class MainController {
         selectionStateLabel.getStyleClass().add(hasSelection ? STATE_PILL_ACTIVE : STATE_PILL_EMPTY);
     }
 
-    private ListCell<AppEntry> createAppEntryCell() {
+    private ListCell<AppEntry> createAppEntryCell(ListView<AppEntry> listView) {
         return new ListCell<AppEntry>() {
             private final Label nameLabel = new Label();
             private final Label pathLabel = new Label();
@@ -340,8 +368,52 @@ public class MainController {
                 nameLabel.getStyleClass().add("app-list-name");
                 pathLabel.getStyleClass().add("app-list-path");
                 pathLabel.setWrapText(true);
+                container.setFillWidth(true);
+                container.prefWidthProperty().bind(listView.widthProperty().subtract(30));
+                pathLabel.maxWidthProperty().bind(listView.widthProperty().subtract(78));
                 container.getStyleClass().add("app-list-cell-content");
                 setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+                setOnDragDetected(event -> {
+                    if (getItem() == null) {
+                        return;
+                    }
+
+                    Dragboard dragboard = startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.put(APP_ENTRY_DATA_FORMAT, Integer.toString(getIndex()));
+                    dragboard.setContent(content);
+                    event.consume();
+                });
+
+                setOnDragOver(event -> {
+                    if (isValidDropTarget(event.getDragboard(), getIndex())) {
+                        event.acceptTransferModes(TransferMode.MOVE);
+                    }
+                    event.consume();
+                });
+
+                setOnDragEntered(event -> {
+                    if (isValidDropTarget(event.getDragboard(), getIndex())) {
+                        getStyleClass().add("app-list-drop-target");
+                    }
+                    event.consume();
+                });
+
+                setOnDragExited(event -> {
+                    getStyleClass().remove("app-list-drop-target");
+                    event.consume();
+                });
+
+                setOnDragDropped(event -> {
+                    boolean completed = false;
+                    if (isValidDropTarget(event.getDragboard(), getIndex())) {
+                        reorderAppItems(readDraggedIndex(event.getDragboard()), getIndex());
+                        completed = true;
+                    }
+                    event.setDropCompleted(completed);
+                    event.consume();
+                });
             }
 
             @Override
@@ -349,6 +421,7 @@ public class MainController {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setGraphic(null);
+                    getStyleClass().remove("app-list-drop-target");
                     return;
                 }
 
@@ -359,6 +432,53 @@ public class MainController {
                 setGraphic(container);
             }
         };
+    }
+
+    private void configureAppListReordering() {
+        appListView.setOnDragOver(event -> {
+            if (hasDraggedIndex(event.getDragboard())) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        appListView.setOnDragDropped(event -> {
+            boolean completed = false;
+            if (hasDraggedIndex(event.getDragboard()) && !appItems.isEmpty()) {
+                reorderAppItems(readDraggedIndex(event.getDragboard()), appItems.size() - 1);
+                completed = true;
+            }
+            event.setDropCompleted(completed);
+            event.consume();
+        });
+    }
+
+    private void reorderAppItems(int fromIndex, int toIndex) {
+        if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0
+                || fromIndex >= appItems.size() || toIndex >= appItems.size()) {
+            return;
+        }
+
+        AppEntry selectedEntry = appItems.get(fromIndex);
+        appItems.setAll(ListReorder.move(appItems, fromIndex, toIndex));
+        appListView.getSelectionModel().select(selectedEntry);
+        saveAppConfiguration("Application order updated.");
+    }
+
+    private boolean hasDraggedIndex(Dragboard dragboard) {
+        return dragboard != null && dragboard.hasContent(APP_ENTRY_DATA_FORMAT);
+    }
+
+    private boolean isValidDropTarget(Dragboard dragboard, int targetIndex) {
+        if (!hasDraggedIndex(dragboard) || targetIndex < 0 || targetIndex >= appItems.size()) {
+            return false;
+        }
+        return readDraggedIndex(dragboard) != targetIndex;
+    }
+
+    private int readDraggedIndex(Dragboard dragboard) {
+        Object content = dragboard.getContent(APP_ENTRY_DATA_FORMAT);
+        return Integer.parseInt(String.valueOf(content));
     }
 
     private Label buildPlaceholderLabel() {
