@@ -111,8 +111,8 @@ Output:
 Additional requirement:
 
 - WiX Toolset 3.x must be installed so `jpackage` can produce the Windows installer
-- Snapshot installer builds are stamped with a Windows-friendly four-part version so repeated development builds can upgrade an existing install more reliably
-- Release installers should still use an intentionally bumped project version in `pom.xml`
+- Windows installers use an internal four-part version so stable releases sort above prior snapshot installers of the same release line
+- The published installer filename still follows the project semver from `pom.xml`
 
 ### Generic Native Wrapper
 

@@ -104,26 +104,39 @@ function Get-ProjectVersion {
     return $version.Trim()
 }
 
-function Get-NativeAppVersion {
+function Get-ReleaseAssetVersion {
     $projectVersion = Get-ProjectVersion
-    $baseVersion = ($projectVersion -replace '-SNAPSHOT$', '')
+    return ($projectVersion -replace '-SNAPSHOT$', '')
+}
 
-    if (-not $projectVersion.EndsWith('-SNAPSHOT')) {
-        return $baseVersion
-    }
+function Convert-ProjectVersionToNativeAppVersion {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectVersion
+    )
 
+    $baseVersion = ($ProjectVersion -replace '-SNAPSHOT$', '')
     $versionParts = $baseVersion.Split('.')
-    if ($versionParts.Count -lt 2) {
-        throw "The project version '$projectVersion' must contain at least major and minor segments."
+    if ($versionParts.Count -lt 3) {
+        throw "The project version '$ProjectVersion' must contain major, minor, and patch segments."
     }
 
     $major = [int]$versionParts[0]
     $minor = [int]$versionParts[1]
-    $timestamp = Get-Date
-    $dayStamp = [int]($timestamp.ToString('yy') + $timestamp.DayOfYear.ToString('000'))
-    $minuteOfDay = [int][Math]::Floor($timestamp.TimeOfDay.TotalMinutes)
+    $patch = [int]$versionParts[2]
 
-    return "$major.$minor.$dayStamp.$minuteOfDay"
+    if (-not $ProjectVersion.EndsWith('-SNAPSHOT')) {
+        return "$major.$minor.65000.$patch"
+    }
+
+    $timestamp = Get-Date
+    $snapshotBuild = ([int]$timestamp.DayOfYear * 100) + [int][Math]::Floor($timestamp.TimeOfDay.TotalMinutes / 15)
+
+    return "$major.$minor.$snapshotBuild.$patch"
+}
+
+function Get-NativeAppVersion {
+    return Convert-ProjectVersionToNativeAppVersion -ProjectVersion (Get-ProjectVersion)
 }
 
 function Remove-PathWithRetry {

@@ -70,6 +70,7 @@ Invoke-Maven -Arguments @('clean', 'package')
 
 $jpackage = Find-JPackageCommand
 $appVersion = Get-NativeAppVersion
+$releaseAssetVersion = Get-ReleaseAssetVersion
 Use-WixToolsetIfNeeded -PackageType $Type
 $nativeRoot = Join-Path $projectRoot 'native-dist'
 $nativeDir = Join-Path $nativeRoot $Type
@@ -124,6 +125,14 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if ($Type -eq 'exe') {
+    $generatedInstaller = Join-Path $nativeDir ("ProxyLauncher-{0}.exe" -f $appVersion)
+    $releaseInstaller = Join-Path $nativeDir ("ProxyLauncher-{0}.exe" -f $releaseAssetVersion)
+    if ((Test-Path $generatedInstaller) -and ($generatedInstaller -ne $releaseInstaller)) {
+        if (Test-Path $releaseInstaller) {
+            Remove-PathWithRetry -LiteralPath $releaseInstaller
+        }
+        Move-Item -LiteralPath $generatedInstaller -Destination $releaseInstaller
+    }
     Write-Host "Native EXE installer created under $nativeDir."
 } else {
     Write-Host "Native app-image created under $nativeDir."
